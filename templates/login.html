@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DeepVid | Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}"> 
+    <script src="{{ url_for('static', filename='js/script.js') }}" defer></script>
+
+</head>
+<body>
+   <div id="back">
+    <header id="Myheader" class="header">
+        <div class="logo">
+            <img src="{{ url_for('static', filename='assets/logo.png') }}" alt="DeepVid">
+        </div>
+        <div class="top-links">
+            <nav class="nav-menu d-none d-lg-block">
+                <ul>
+                    <li class=""><a href="{{ url_for('index') }}">Home</a></li>
+                    <li><a href="{{ url_for('signup') }}">Sign Up</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+   <div class="login-container">
+            <h2>Login Form</h2>
+            <form id="loginForm" method="POST" action="{{ url_for('login') }}">
+              <div class="form-group">
+                  <label for="email">Email Address:</label>
+                  <input type="email" id="email" placeholder="Enter your email" name="email" autocomplete="off" required>
+                  <i class="uil uil-envelope-alt email"></i>
+                  <div id="emailError" class="error"></div>
+              </div>
+              <div class="form-group">
+                  <label for="password">Password:</label>
+                  <input type="password" id="password" placeholder="Enter your password" name="password"  required>
+                  <i class="uil uil-lock password"></i>
+                  <i class="uil uil-eye-slash pw_hide"></i>
+                  <div id="passwordError" class="error"></div>
+              </div>
+              {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                  <div class="flash-message">
+                    {{ messages[0] }}
+                  </div>
+                {% endif %}
+              {% endwith %}
+              <button type="submit" id="submit">LOGIN</button>
+            </form>
+        </div>
+   </div>
+</body>
+</html>
+           
+              

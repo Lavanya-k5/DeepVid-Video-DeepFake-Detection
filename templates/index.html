@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DeepVid: Deepfake Video Detection</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var getStartedBtn = document.getElementById('getStartedBtn');
+            var loginLink = document.querySelector('a[href="{{ url_for('login') }}"]');
+            var signupLink = document.querySelector('a[href="{{ url_for('signup') }}"]');
+          
+            {% if session.get('email') %}
+                getStartedBtn.disabled = false;
+                getStartedBtn.addEventListener('click', function() {
+                    window.location.href = "{{ url_for('upload_file') }}";
+                });
+            {% else %}
+                getStartedBtn.disabled = false;
+                getStartedBtn.addEventListener('click', function() {
+                    alert('Please login or sign up to upload a video.');
+                });
+            {% endif %}
+
+            // Function to check the database connection
+            function checkDbConnectionAndHandleLinks(linkElement, url, redirectUrl) {
+                fetch(url)
+                .then(response => response.json())
+                .then(response => {
+                    if (!response.success) {
+                        // If connection fails, disable link and show error alert
+                        linkElement.classList.add('disabled-link');
+                            //loginLink.addEventListener('click', function(event) {
+                               // event.preventDefault();
+                        alert(response.error);        
+                    } else {
+                    // If connection succeeds, remove disabled link style and proceed
+                    linkElement.classList.remove('disabled-link');
+                    window.location.href = redirectUrl; // Redirect to the specified URL
+                    }
+                })
+            .catch(error => {
+            console.error('Error:', error);
+                // Handle fetch error (network or other issues)
+                linkElement.classList.add('disabled-link');
+                alert('An error occurred while checking the database connection. Please try again.');
+            });
+            }
+            // Example of dynamically checking DB connection when clicking login/signup links
+            if (loginLink) {
+                loginLink.addEventListener('click', function(event) {
+                    event.preventDefault(); // Prevent default link behavior
+                    // Check DB connection before proceeding with login
+                    checkDbConnectionAndHandleLinks(loginLink, '{{ url_for("check_db_connection") }}','{{ url_for("login") }}');
+                });
+            }
+            if (signupLink) {
+                signupLink.addEventListener('click', function(event) {
+                    event.preventDefault(); // Prevent default link behavior
+                    // Check DB connection before proceeding with signup
+                    checkDbConnectionAndHandleLinks(signupLink, '{{ url_for("check_db_connection") }}', '{{ url_for("signup") }}');
+                });
+            }
+        });
+    </script>
+</head>
+
+<body>
+    <header id="Myheader" class="header">
+        <div class="logo">
+            <img src="{{ url_for('static', filename='assets/logo.png') }}" alt="DeepVid">
+        </div>
+        <div class="top-links">
+            <nav class="nav-menu d-none d-lg-block">
+                <ul>
+                    <li class="active"><a href="#Home">Home</a></li>
+                    <li class="active"><a href="#detail">Details</a></li>
+                    {% if session['email'] %}
+                        <li><a href="{{ url_for('logout') }}">Logout</a></li>
+                    {% else %}
+                        <li><a href="{{ url_for('login') }}">Login</a></li>
+                        <li><a href="{{ url_for('signup') }}">Sign Up</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <section id="Home" class="Home">
+        <div id="left-container">
+            <h1>Welcome to DeepVid <br> Deepfake Video Detection</h1>
+            <p>Upload a Video to test for possible deepfakes</p>
+            <button id="getStartedBtn">Get Started</button>
+        </div>      
+    </section>
+    <!-- ======= Details Section ======= -->
+    <section id="detail" class="details">
+        <div class="container"> 
+              <h3>Model Summary</h3>
+              <p>To implement the Video Deepfake Detection project, <b>EfficientNet B0</b> and <b>ViT (Vision Transformer)</b> models have been used.</p>
+              <ul>
+                <li><i class="icofont-check"></i> Input Size: 224 x 224</li>
+                <li><i class="icofont-check"></i> Patch Size: 7 x 7</li>
+                <li><i class="icofont-check"></i> Optimizer: Stochastic Gradient Descent (SGD)</li>
+                <li><i class="icofont-check"></i> Scheduler: StepLR</li>
+                <li><i class="icofont-check"></i> Learning Rate: 0.001</li>
+                <li><i class="icofont-check"></i> Dropout Rate: 0.15</li>
+                <li><i class="icofont-check"></i> Regularization: L2 with 0.0000001 rate</li>
+              </ul>
+              <ul>
+                <li><i class="icofont-check"></i> Accuracy: 81.95%</li>
+                <li><i class="icofont-check"></i> F1-Score: 74.7%</li>
+                <li><i class="icofont-check"></i> This model has achieved better results than XceptionNet and MesoNet based on a <a href="http://kaldir.vc.in.tum.de/faceforensics_benchmark/">public deepfake detection benchmark</a></li>
+              </ul>
+            </div>
+    </section>
+      <!-- End Details Section -->
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <p> <a href="https://github.com/Lavanya-k5" target="_blank">GitHub Profile</a></p>
+        </div>
+    </footer>
+    <!-- End Footer -->
+      
+</body>
+</html>
+
+
+
+

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Results</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/result.css') }}">
+</head>
+<body>
+    <!-- Back Arrow Link -->
+    <div class="back-arrow">
+        <a href="{{ url_for('upload_file') }}" class="back-link">
+            <span class="arrow">&larr;</span> Back to Upload
+        </a>
+    </div>
+    {% if no_faces %}
+    <div class="container-no-faces">
+        <div class="alert alert-danger">
+            No faces detected. Cannot process the video.
+        </div>
+    </div>
+    {% else %}
+    <div class="container">
+        <h1>Video DeepFake Detection</h1>
+        <h2>Uploaded Video</h2>
+        <video width="600" controls>
+            <source src="{{ url_for('download_file', filename=video) }}" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+   
+        <h2 class="head2">Extracted Frames</h2>
+        <div id="faces_images" class="col-12 mt-4 mb-2">
+        {% for frame in frames %}
+            {% set frame_path = 'output/' + video_folder + '/frames/' + frame %}
+            <img src="{{ url_for('download_file', filename=frame_path) }}" class="faces"  width=auto height="250" />
+        {% endfor %}
+        </div>
+
+        <h2 class="head2">Cropped Faces</h2>
+        <div id="faces_images" class="col-12 mt-4 mb-2">
+        {% for face in faces %}
+            {% set face_path = 'output/' + video_folder + '/faces/' + face %}
+            <img src="{{ url_for('download_file', filename=face_path) }}" class="faces"  width=auto height="250" />
+        {% endfor %}
+        </div>
+    <div>
+        <h2>Prediction Result</h2>
+        <h4>Confidence : {{ prediction }}</h4>
+        {% set prediction_float = prediction | float %}
+        {% if prediction_float > 0.55 %}
+            <h4 class="mx-auto">Result: <span style="color:red">FAKE</span>
+            <img src="{{ url_for('static', filename='assets/thumpdown.png') }}" alt="real" height="70px" width=auto>
+        {% else %}
+            <h4 class="mx-auto">Result: <span style="color:green">REAL</span>
+            <img src="{{ url_for('static', filename='assets/thumpup.png') }}" alt="fake" height="70px" width=auto >
+        {% endif %}
+    </div>
+
+    <div class="display-properties">
+        <h2>Video Properties</h2>
+        <ul>
+            <li><strong>Duration     :  </strong> {{ video_properties.duration }} seconds</li>
+            <li><strong>Frame Rate   :  </strong> {{ video_properties.frame_rate }} FPS</li>
+            <li><strong>Total Frames :  </strong> {{ video_properties.total_frames }}</li>
+            <li><strong>Dimensions   :  </strong> {{ video_properties.width }}x{{ video_properties.height }}</li>
+            <li><strong>Size         :  </strong> {{ video_properties.size_mb }} MB</li>
+        </ul>
+    </div>
+    
+    {% endif %}
+    </div>
+</body>
+</html>

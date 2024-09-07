@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DeepVid | Admin DB</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        .container {
+            padding: 20px;
+            max-width: 800px; /* Set a maximum width for the container */
+            margin: 0 auto; /* Center the container */
+            margin-top: 40px; /* Add space between header and container */
+        } 
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px; /* Add space below the heading */
+        }
+        .user-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .user-table th,
+        .user-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        .user-table th {
+            background-color: #333;
+            color: #fff;
+        }
+        .user-table tr:hover {
+            background-color: #f1f1f1;
+        }
+        .delete-link {
+            color: #e74c3c;
+            font-weight:bold ;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        .delete-link:hover {
+            color: #c0392b;
+        }
+    </style>
+</head>
+<body>
+    <header id="Myheader" class="header">
+        <div class="logo">
+            <img src="{{ url_for('static', filename='assets/logo.png') }}" alt="DeepVid">
+        </div>
+        <div class="top-links">
+            <nav class="nav-menu d-none d-lg-block">
+                <ul>
+                    <li><a href="{{ url_for('logout') }}">Logout</a></li> 
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <div>
+        <div class="container">
+            <h1>User Details</h1>
+        <table class="user-table">
+            <thead>
+                <tr>
+                    <th>Email</th>
+                    <th>Password</th>
+                    <th>User Type</th>
+                    <th>SignUp Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td>{{ user.Email_Id }}</td>
+                    <td>{{ user.password }}</td>
+                    <td>{{ user.User_Type }}</td>
+                    <td>{{ user.signup_date }}</td>
+                    <td>
+                        <form action="{{ url_for('delete_user', email=user.Email_Id) }}" method="post" onsubmit="return confirm('Are you sure you want to delete this user?');">
+                                <button type="submit" class="delete-link">Delete</button>
+                        </form>
+                        
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>    
+</div>
+</body>

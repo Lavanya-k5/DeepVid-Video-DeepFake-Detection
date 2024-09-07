@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload File</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}"> 
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var uploadForm = document.getElementById('upload_form');
+            var fileInput = document.getElementById('file');
+            uploadForm.addEventListener('submit', function(event) {
+                var file = fileInput.files[0];
+                if (file) {
+                    // Check file size (16MB = 16 * 1024 * 1024 bytes)
+                    if (file.size > 16 * 1024 * 1024) {
+                        alert('File size must be less than 16MB.');
+                        event.preventDefault();
+                        return;
+                    }
+                    // Check file type
+                    if (file.type !== 'video/mp4') {
+                        alert('File must be an MP4 video.');
+                        event.preventDefault();
+                        return;
+                    }
+                } else {
+                    alert('Please select a file.');
+                    event.preventDefault();
+                    return;
+                }
+                // Uncomment this part if you want to perform some other action on form submission
+                uploadForm.submit();
+    
+                
+            });
+        });
+    </script>
+    
+</head>
+<body>
+    <div id="back">
+    <header id="Myheader" class="header">
+        <div class="logo">
+            <img src="{{ url_for('static', filename='assets/logo.png') }}" alt="DeepVid">
+        </div>
+        <div class="top-links">
+            <nav class="nav-menu d-none d-lg-block">
+                <ul>
+                    <li class=""><a href="{{ url_for('index') }}">Home</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+        <div id="main-container">
+            <h2>Upload Video</h2>
+            <form id="upload_form" action="{{ url_for('upload_file') }}" method="post" enctype="multipart/form-data">
+               <label for="file">Choose video file:</label>
+               <input type="file" name="file" id="file">
+               <br><br>
+                <label for="frames_per_video">Number of frames to read: <span id="slider-value">5</span></label>
+                <input type="hidden" id="frames_per_video" name="frames_per_video" value="5">
+                <input type="range" id="slider" min="5" max="30" value="5" step="5">
+                <br><br>
+                <input type="submit" value="Upload">
+            </form>
+        </div>
+    </div>  
+</body>
+<script>
+    // JavaScript to handle slider value change
+document.addEventListener('DOMContentLoaded', function () {
+    var slider = document.getElementById('slider');
+    var sliderValue = document.getElementById('slider-value');
+    var framesPerVideo = document.getElementById('frames_per_video');
+
+    // Initialize slider value display and background
+    sliderValue.textContent = slider.value;
+    updateSliderBackground(slider);
+
+    // Update slider value display, hidden input value, and background on slider change
+    slider.addEventListener('input', function () {
+        sliderValue.textContent = this.value;
+        framesPerVideo.value = this.value;
+        updateSliderBackground(this);
+    });
+    function updateSliderBackground(slider) {
+        var value = (slider.value - slider.min) / (slider.max - slider.min) * 100;
+        slider.style.background = `linear-gradient(to right, #007bff ${value}%, #ddd ${value}%)`;
+    }
+});
+</script>
+</html>
